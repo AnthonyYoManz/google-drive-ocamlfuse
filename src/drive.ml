@@ -155,10 +155,13 @@ let is_lost_and_found path trashed config =
   else ExtString.String.starts_with path lost_and_found_directory
 
 let is_shared_with_me_root path trashed config =
-  if trashed then false else path = shared_with_me_directory
+  if trashed then false 
+  else if config.Config.disable_shared then false 
+  else path = shared_with_me_directory
 
 let is_shared_with_me path trashed config =
   if trashed then false
+  else if config.Config.disable_shared then false
   else ExtString.String.starts_with path shared_with_me_directory
 
 let get_path_in_cache path config =

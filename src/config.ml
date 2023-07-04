@@ -107,6 +107,8 @@ type t = {
   log_directory : string;
   (* Specifies the file descriptor to log to (stdout/stderr). *)
   log_to : string;
+  (* Exclude "Shared With Me" files. Problematic if you have shortcuts to shared files *)
+  disable_shared: bool;
   (* Folder id or remote path of the root folder *)
   root_folder : string;
   (* Team drive id *)
@@ -441,6 +443,12 @@ let log_to =
     GapiLens.set = (fun v x -> { x with log_to = v });
   }
 
+let disable_shared =
+  {
+    GapiLens.get = (fun x -> x.disable_shared);
+    GapiLens.set = (fun v x -> { x with disable_shared = v });
+  }
+
 let root_folder =
   {
     GapiLens.get = (fun x -> x.root_folder);
@@ -637,6 +645,7 @@ let default =
     cache_directory = "";
     log_directory = "";
     log_to = "";
+    disable_shared = false;
     root_folder = "";
     team_drive_id = "";
     metadata_memory_cache = true;
@@ -710,6 +719,7 @@ let default_debug =
     cache_directory = "";
     log_directory = "";
     log_to = "";
+    disable_shared = false;
     root_folder = "";
     team_drive_id = "";
     metadata_memory_cache = true;
@@ -812,6 +822,7 @@ let of_table table =
     cache_directory = get "cache_directory" Std.identity default.cache_directory;
     log_directory = get "log_directory" Std.identity default.log_directory;
     log_to = get "log_to" Std.identity default.log_to;
+    disable_shared = get "disable_shared" bool_of_string default.disable_shared;
     root_folder = get "root_folder" Std.identity default.root_folder;
     team_drive_id = get "team_drive_id" Std.identity default.team_drive_id;
     metadata_memory_cache =
@@ -906,6 +917,7 @@ let to_table data =
   add "cache_directory" data.cache_directory;
   add "log_directory" data.log_directory;
   add "log_to" data.log_to;
+  add "disable_shared" (data.disable_shared |> string_of_bool);
   add "root_folder" data.root_folder;
   add "team_drive_id" data.team_drive_id;
   add "metadata_memory_cache" (data.metadata_memory_cache |> string_of_bool);
